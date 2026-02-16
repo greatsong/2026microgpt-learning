@@ -562,6 +562,9 @@ export default function Week7Page() {
                         신경망을 직접 구성하고 훈련시켜보세요!<br />
                         AND/OR은 퍼셉트론<span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>(가장 간단한 신경망, 뉴런 하나로 이루어진 모델)</span>, XOR은 은닉층이 필요!
                     </p>
+                    <p style={{ fontSize: '0.75rem', color: 'var(--text-dim)', lineHeight: 1.5, marginTop: 4 }}>
+                        순전파(Forward)로 예측하고, 역전파(Backward)로 &quot;어디서 틀렸는지&quot;를 역추적합니다. 이 과정을 반복하면 AI가 점점 정확해집니다.
+                    </p>
                 </div>
 
                 {/* 데이터셋 + 구조 표시 */}
@@ -649,13 +652,13 @@ export default function Week7Page() {
                     {detailPhase !== PHASE_IDLE && (
                         <div style={styles.phaseBanner}>
                             <div style={styles.phaseSteps}>
-                                <PhaseStep label="Forward" active={detailPhase === PHASE_FORWARD} done={[PHASE_LOSS, PHASE_BACKWARD, PHASE_UPDATE].includes(detailPhase)} color="#60a5fa" />
+                                <PhaseStep label="Forward(순전파)" active={detailPhase === PHASE_FORWARD} done={[PHASE_LOSS, PHASE_BACKWARD, PHASE_UPDATE].includes(detailPhase)} color="#60a5fa" />
                                 <span style={styles.phaseArrow}> {'>'} </span>
-                                <PhaseStep label="Loss" active={detailPhase === PHASE_LOSS} done={[PHASE_BACKWARD, PHASE_UPDATE].includes(detailPhase)} color="#fbbf24" />
+                                <PhaseStep label="Loss(오차)" active={detailPhase === PHASE_LOSS} done={[PHASE_BACKWARD, PHASE_UPDATE].includes(detailPhase)} color="#fbbf24" />
                                 <span style={styles.phaseArrow}> {'>'} </span>
-                                <PhaseStep label="Backward" active={detailPhase === PHASE_BACKWARD} done={[PHASE_UPDATE].includes(detailPhase)} color="#fb923c" />
+                                <PhaseStep label="Backward(역전파)" active={detailPhase === PHASE_BACKWARD} done={[PHASE_UPDATE].includes(detailPhase)} color="#fb923c" />
                                 <span style={styles.phaseArrow}> {'>'} </span>
-                                <PhaseStep label="Update" active={detailPhase === PHASE_UPDATE} done={false} color="#10b981" />
+                                <PhaseStep label="Update(갱신)" active={detailPhase === PHASE_UPDATE} done={false} color="#10b981" />
                             </div>
                             <div style={styles.phaseDescription}>{phaseStatusLabel[detailPhase]}</div>
                         </div>
@@ -663,11 +666,11 @@ export default function Week7Page() {
 
                     <div style={styles.statsRow}>
                         <div style={styles.statBox}>
-                            <span style={styles.statLabel}>Epoch</span>
+                            <span style={styles.statLabel}>Epoch<span style={{ fontSize: '0.6rem', color: 'var(--text-dim)', fontWeight: 400 }}> (전체 데이터를 한 번 다 본 횟수)</span></span>
                             <span style={styles.statValue}>{epoch}</span>
                         </div>
                         <div style={styles.statBox}>
-                            <span style={styles.statLabel}>Loss</span>
+                            <span style={styles.statLabel}>Loss<span style={{ fontSize: '0.6rem', color: 'var(--text-dim)', fontWeight: 400 }}> (오차: 얼마나 틀렸는지)</span></span>
                             <span style={{ ...styles.statValue, color: isConverged ? '#10b981' : lastLoss > 0.1 ? '#f43f5e' : '#fbbf24' }}>
                                 {lastLoss !== null ? lastLoss.toFixed(6) : '—'}
                             </span>
@@ -774,6 +777,9 @@ export default function Week7Page() {
                             <div style={{ ...styles.chainRuleFormula, marginTop: 8 }}>
                                 <span style={{ color: '#fbbf24' }}>∂L/∂w</span> = <span style={{ color: '#f43f5e' }}>∂L/∂y</span> x <span style={{ color: '#60a5fa' }}>∂y/∂z</span> x <span style={{ color: '#fb923c' }}>∂z/∂w</span>
                             </div>
+                            <p style={{ fontSize: '0.75rem', color: 'var(--text-dim)', lineHeight: 1.5, marginTop: 4, textAlign: 'left' }}>
+                                ∂L/∂w 는 &quot;손실(L)이 가중치(w)를 살짝 바꿨을 때 얼마나 변하는지&quot;를 나타냅니다. 미적분을 모르셔도 괜찮아요 — 핵심은 &quot;어느 방향으로 가중치를 바꿔야 오차가 줄어드는지&quot;를 알려준다는 것입니다.
+                            </p>
                             <div style={styles.chainRuleDetail}>
                                 <div><span style={{ color: '#f43f5e' }}>∂L/∂y</span> = (y - target) <span style={{ color: 'var(--text-dim)' }}>... Loss의 미분</span></div>
                                 <div><span style={{ color: '#60a5fa' }}>∂y/∂z</span> = y(1 - y) <span style={{ color: 'var(--text-dim)' }}>... sigmoid의 미분</span></div>

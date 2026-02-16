@@ -268,6 +268,9 @@ export default function Week5Page() {
                         <br />
                         <strong>최저점</strong>에 가장 먼저 도달하세요! 🏎️💨
                     </p>
+                    <p style={{ fontSize: '0.75rem', color: 'var(--text-dim)', lineHeight: 1.5, marginTop: 4 }}>
+                        왜 경사하강법이 필요할까? AI가 틀린 답을 냈을 때, 어떻게 하면 더 나은 답을 낼 수 있을까? 경사하강법은 &quot;오차를 줄이는 방향으로 조금씩 이동하기&quot;라는 가장 기본적인 학습 방법입니다.
+                    </p>
                 </div>
 
                 {/* 접속 현황 */}
@@ -319,6 +322,9 @@ export default function Week5Page() {
                             />
                             <span style={styles.paramValue}>{myLearningRate.toFixed(2)}</span>
                         </div>
+                        <p style={{ fontSize: '0.75rem', color: 'var(--text-dim)', lineHeight: 1.4, marginTop: -4 }}>
+                            학습률 = 한 번에 얼마나 크게 이동할지. 너무 크면 정답을 지나치고, 너무 작으면 학습이 너무 느립니다.
+                        </p>
                         {myLearningRate > 0.8 ? (
                             <div style={{
                                 padding: '8px 12px', borderRadius: 8,
@@ -539,7 +545,7 @@ export default function Week5Page() {
                             color: 'var(--text-secondary)', lineHeight: 1.6,
                         }}>
                             💡 <strong style={{ color: '#34d399' }}>Loss(손실) 함수란?</strong> —
-                            AI의 예측이 정답과 얼마나 다른지를 숫자로 나타낸 것.
+                            AI가 얼마나 틀렸는지를 숫자로 나타내는 함수. 이 값을 줄이는 것이 학습의 목표입니다.
                             Loss가 <strong>0에 가까울수록</strong> 정확한 예측이에요.
                             경사하강법의 목표는 이 Loss를 최소화하는 것!
                         </div>
@@ -566,10 +572,10 @@ export default function Week5Page() {
                                 <div style={{ padding: '6px 10px', fontWeight: 700, color: 'var(--text-secondary)' }}>사용처</div>
                             </div>
                             {[
-                                { name: 'SGD', feat: '기본 경사하강. 모멘텀 추가 가능', use: '간단한 모델, 연구', color: '#94a3b8' },
-                                { name: 'Adam', feat: '학습률 자동 조절 + 모멘텀', use: 'GPT, BERT 등 LLM', color: '#10b981' },
-                                { name: 'AdaGrad', feat: '자주 나오는 파라미터의 lr 감소', use: '희소 데이터 (NLP)', color: '#3b82f6' },
-                                { name: 'AdamW', feat: 'Adam + 가중치 감쇠(Weight Decay)', use: 'GPT-3, LLaMA', color: '#a78bfa' },
+                                { name: 'SGD', feat: '가장 기본적인 경사하강. 모멘텀(관성) 추가 가능', use: '간단한 모델, 연구', color: '#94a3b8' },
+                                { name: 'Adam', feat: '학습률을 자동으로 조절 + 모멘텀 결합 (만능형)', use: 'GPT, BERT 등 LLM', color: '#10b981' },
+                                { name: 'AdaGrad', feat: '자주 등장하는 파라미터는 천천히, 드문 파라미터는 빠르게', use: '희소 데이터 (NLP)', color: '#3b82f6' },
+                                { name: 'AdamW', feat: 'Adam + 가중치 감쇠(과적합 방지)', use: 'GPT-3, LLaMA', color: '#a78bfa' },
                             ].map(o => (
                                 <div key={o.name} style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr 1.5fr', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                                     <div style={{ padding: '6px 10px', color: o.color, fontWeight: 700 }}>{o.name}</div>

@@ -259,7 +259,7 @@ export default function TokenizerLab() {
             <div style={styles.content}>
                 {/* ── 섹션 1: 기존 토크나이저 ── */}
                 <div style={styles.card}>
-                    <h3 style={styles.label}>텍스트 입력 (Prompt)</h3>
+                    <h3 style={styles.label}>텍스트 입력 (Prompt: AI에게 주는 질문이나 명령)</h3>
                     <textarea
                         value={inputText}
                         onChange={(e) => setInputText(e.target.value)}
@@ -302,7 +302,10 @@ export default function TokenizerLab() {
                     </div>
                     <p style={styles.explanation}>
                         각 색깔 블록 하나가 <strong>1개의 토큰</strong>입니다.<br />
-                        Notice how words like &quot;fascinating&quot; might be split into &quot;fascinat&quot; + &quot;ing&quot;!
+                        &quot;fascinating&quot; 같은 단어가 &quot;fascinat&quot; + &quot;ing&quot;으로 나뉘는 것을 관찰해보세요!
+                    </p>
+                    <p style={{ fontSize: '0.75rem', color: 'var(--text-dim)', textAlign: 'center', marginTop: 8 }}>
+                        각 토큰 아래 숫자는 Token ID입니다. AI는 글자 대신 이 숫자를 사용합니다.
                     </p>
                 </div>
 
@@ -312,7 +315,20 @@ export default function TokenizerLab() {
                 <div style={{ ...styles.card, marginTop: 28, border: '1px solid var(--border-active)' }}>
                     <h3 style={{ ...styles.label, color: 'var(--accent-star-cyan)' }}>
                         🔬 BPE (Byte Pair Encoding) 시뮬레이션
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}> — 자주 나란히 붙는 두 조각(Pair)을 하나로 합치는 알고리즘. 원래 데이터 압축 기법에서 유래</span>
                     </h3>
+                    <div style={{
+                        padding: '10px 14px',
+                        borderRadius: 8,
+                        background: 'rgba(251, 191, 36, 0.06)',
+                        border: '1px solid rgba(251, 191, 36, 0.15)',
+                        marginBottom: 12,
+                        fontSize: '0.82rem',
+                        color: 'var(--text-dim)',
+                        lineHeight: 1.6,
+                    }}>
+                        왜 BPE가 필요할까요? 단어 단위로 쪼개면 처음 보는 단어(신조어, 외래어)를 처리할 수 없고, 글자 단위로 쪼개면 문장이 너무 길어집니다. BPE는 이 두 문제를 동시에 해결하기 위해 만들어진 알고리즘입니다.
+                    </div>
                     <p style={styles.bpeDescription}>
                         실제 BPE 알고리즘이 동작하는 과정을 단계별로 관찰해보세요.
                         문자 단위에서 시작하여, 가장 자주 등장하는 <strong style={{ color: 'var(--accent-star-cyan)' }}>바이그램</strong>
@@ -354,7 +370,7 @@ export default function TokenizerLab() {
 
                     {/* 코퍼스 미리보기 */}
                     <div style={styles.corpusPreview}>
-                        <div style={styles.corpusLabel}>코퍼스 (Corpus):</div>
+                        <div style={styles.corpusLabel}>코퍼스 (Corpus, AI가 학습에 사용하는 텍스트 모음):</div>
                         {PRESETS[bpePreset].sentences.map((s, i) => (
                             <code key={i} style={styles.corpusLine}>{s}</code>
                         ))}
@@ -536,6 +552,7 @@ export default function TokenizerLab() {
                                     <th style={styles.compTh}>문자 단위<br />(Character-level)</th>
                                     <th style={{ ...styles.compTh, color: 'var(--accent-star-cyan)' }}>
                                         서브워드(BPE)<br />(Subword-level)
+                                        <br /><span style={{ fontSize: '0.7rem', color: 'var(--text-dim)', fontWeight: 400 }}>서브워드(Subword)란 단어와 글자의 중간 크기 조각. 예: &apos;tokenizer&apos; → &apos;token&apos; + &apos;izer&apos;</span>
                                     </th>
                                 </tr>
                             </thead>
@@ -553,7 +570,7 @@ export default function TokenizerLab() {
                                             (Out Of Vocabulary:<br/>사전에 없는 단어)
                                         </span>
                                     </td>
-                                    <td style={styles.compTd}>불가능 (UNK)</td>
+                                    <td style={styles.compTd}>불가능 (UNK: Unknown, 모르는 단어 표시 토큰)</td>
                                     <td style={styles.compTd}>완벽</td>
                                     <td style={{ ...styles.compTd, color: 'var(--accent-star-cyan)' }}>거의 완벽</td>
                                 </tr>

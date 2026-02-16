@@ -66,7 +66,7 @@ function RNNVisualizer() {
 
     return (
         <div style={styles.card}>
-            <h3 style={styles.label}>RNN Memory Simulation</h3>
+            <h3 style={styles.label}>RNN 기억력 시뮬레이션</h3>
             <p style={styles.desc}>
                 RNN은 새로운 정보가 들어올 때마다 과거의 기억이 희미해집니다.
                 이를 <strong>기울기 소실 (Vanishing Gradient) 문제</strong>라고 합니다.
@@ -89,6 +89,7 @@ function RNNVisualizer() {
                 <div style={{ width: '100%' }}>
                     <div style={{ marginBottom: 20 }}>
                         <div style={styles.labelSmall}>입력 순서 (Time Steps)</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginBottom: 6 }}>RNN은 단어를 하나씩 순서대로 읽으므로, 각 입력을 '시간 단계(Time Step)'라 부릅니다</div>
                         <div style={{ display: 'flex', gap: 10 }}>
                             {sequence.map((char, i) => (
                                 <div key={i} style={styles.seqBox}>{char}</div>
@@ -97,6 +98,7 @@ function RNNVisualizer() {
                     </div>
                     <div>
                         <div style={styles.labelSmall}>현재 RNN의 기억 상태 (Hidden State)</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginBottom: 6 }}>외부에서 직접 보이지 않고 RNN 내부에서만 유지되므로 '숨은 상태'라 부릅니다</div>
                         <div style={{ display: 'flex', gap: 10, minHeight: 60, alignItems: 'flex-end' }}>
                             {hiddenState.map((item, i) => (
                                 <div key={i} style={{
@@ -184,6 +186,7 @@ function LSTMVisualizer() {
                     <li><strong style={{ color: '#fbbf24' }}>σ (시그마)</strong> = sigmoid 함수, 0~1 사이 값을 출력하는 <em>&quot;게이트를 열고 닫는 역할&quot;</em></li>
                     <li><strong style={{ color: '#fbbf24' }}>⊙</strong> = 원소별 곱셈 (각 숫자를 같은 위치끼리 곱함, element-wise multiplication)</li>
                     <li><strong style={{ color: '#fbbf24' }}>tanh</strong> = -1~1 사이로 압축하는 활성화 함수 (새 정보의 후보값을 만들 때 사용)</li>
+                    <li><strong style={{ color: '#fbbf24' }}>W, h, x, b</strong> = W = 가중치(학습되는 숫자들), h{'{t-1}'} = 이전 기억, x_t = 현재 입력, b = 편향</li>
                 </ul>
             </div>
 
@@ -533,7 +536,7 @@ function CompareSection() {
                     ['속도', '느림 ❌', '빠름 ✅'],
                     ['긴 문장 처리', '어려움 (기억 소실)', '쉬움 (Attention)'],
                     ['학습 난이도', '쉬움', '데이터 많이 필요'],
-                    ['대표 모델', 'LSTM, GRU', 'GPT, BERT, LLaMA'],
+                    ['대표 모델', 'LSTM, GRU(Gated Recurrent Unit: LSTM을 단순화한 모델, 게이트 2개)', 'GPT, BERT, LLaMA'],
                 ].map(([feat, rnn, trans], i) => (
                     <div key={i} style={{
                         display: 'grid', gridTemplateColumns: '1.2fr 1fr 1fr',
@@ -554,6 +557,7 @@ function CompareSection() {
                 <strong>💡 결론:</strong> RNN의 &quot;순차 처리 + 기억 소실&quot; 한계를 극복하기 위해
                 Transformer가 등장했고, 이것이 GPT/ChatGPT 혁명의 출발점입니다!
                 대신 Transformer는 Position 정보를 직접 주입해야 합니다 (Positional Encoding).
+                <br /><span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>Transformer는 Attention으로 모든 위치를 동시에 참조하므로 순서대로 처리할 필요가 없습니다</span>
             </div>
         </div>
     );

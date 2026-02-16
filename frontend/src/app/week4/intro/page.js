@@ -315,7 +315,7 @@ export default function Week4IntroPage() {
 
     const nextStep = () => setCurrentStep((s) => Math.min(s + 1, STEPS.length - 1));
     const prevStep = () => { if (currentStep > 0) setCurrentStep((s) => s - 1); };
-    const goToLab = () => router.push('/week4');
+    const goToLab = () => router.push('/week4/practice');
 
     const renderStepContent = () => {
         switch (step.id) {
@@ -326,15 +326,15 @@ export default function Week4IntroPage() {
             case 'galaxy':
                 return (
                     <div style={{ ...demoStyles.container, textAlign: 'center' }}>
-                        <div style={{ fontSize: '5rem', marginBottom: 16 }} className="animate-float">🌌</div>
+                        <div style={{ fontSize: '5rem', marginBottom: 16 }} className="animate-float">📐</div>
                         <p style={demoStyles.welcomeText}>
                             지금까지 배운 것을 <strong>직접 체험</strong>할 시간!<br /><br />
-                            여러분이 입력한 단어가 3D 우주 속 <strong style={{ color: '#fbbf24' }}>별</strong>이 됩니다.<br />
-                            비슷한 의미의 단어 별은 가까이 모이고,<br />
-                            다른 의미의 별은 멀리 떨어져요.
+                            먼저 <strong style={{ color: '#7c5cfc' }}>코사인 유사도</strong>를 2D → 3D → 300D로 실습하고,<br />
+                            <strong style={{ color: '#10b981' }}>실제 AI 임베딩</strong>으로 벡터 연산을 해본 뒤,<br />
+                            <strong style={{ color: '#fbbf24' }}>3D 은하수</strong>에서 단어 별을 만들어봐요!
                         </p>
                         <button className="btn-nova" style={{ marginTop: 24, padding: '14px 40px', fontSize: '1.1rem' }} onClick={goToLab}>
-                            <span>🚀 은하수 체험 시작!</span>
+                            <span>📐 코사인 유사도 실습 시작!</span>
                         </button>
                     </div>
                 );

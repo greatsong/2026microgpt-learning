@@ -316,6 +316,7 @@ export default function NeuronLab() {
                     {/* Weights */}
                     <div style={styles.card}>
                         <h3 style={styles.label}>2. 가중치 (Weights)</h3>
+                        <p style={{ fontSize: '0.75rem', color: 'var(--text-dim)', lineHeight: 1.4, marginTop: -10, marginBottom: 4 }}>가중치 = 각 입력의 중요도. 값이 클수록 해당 입력이 결과에 더 큰 영향을 줍니다.</p>
                         <ControlRow label="w₁" value={weights.w1} min={-3} max={3} step={0.1} color={getStrokeColor(weights.w1)}
                             onChange={v => setWeights({ ...weights, w1: v })} />
                         <ControlRow label="w₂" value={weights.w2} min={-3} max={3} step={0.1} color={getStrokeColor(weights.w2)}
@@ -325,11 +326,15 @@ export default function NeuronLab() {
                     {/* Bias & Activation */}
                     <div style={styles.card}>
                         <h3 style={styles.label}>3. 편향 및 활성화 함수</h3>
+                        <p style={{ fontSize: '0.75rem', color: 'var(--text-dim)', lineHeight: 1.4, marginTop: -10, marginBottom: 4 }}>편향(Bias) = 기본값 조정. 입력이 모두 0이어도 뉴런이 활성화될 수 있게 해주는 값입니다.</p>
                         <ControlRow label="Bias (b)" value={bias} min={-3} max={3} step={0.1} color="#60a5fa"
                             onChange={v => setBias(v)} />
 
                         <div style={{ marginTop: 20 }}>
                             <label style={{ ...styles.label, display: 'block' }}>활성화 함수 (Activation)</label>
+                            <p style={{ fontSize: '0.75rem', color: 'var(--text-dim)', lineHeight: 1.5, marginBottom: 8, marginTop: -8 }}>
+                                왜 활성화 함수가 필요할까? 없으면 아무리 층을 쌓아도 결국 하나의 직선(선형 변환)과 같아서, 복잡한 패턴을 학습할 수 없습니다.
+                            </p>
                             <div style={styles.btnGroup}>
                                 {['sigmoid', 'relu', 'tanh', 'step'].map(fn => (
                                     <button
@@ -346,10 +351,10 @@ export default function NeuronLab() {
                                 ))}
                             </div>
                             <p style={styles.explain}>
-                                {activation === 'sigmoid' && 'Sigmoid: 0과 1 사이의 값으로 압축합니다. 확률 표현에 적합합니다.'}
-                                {activation === 'relu' && 'ReLU: 0보다 작으면 0, 크면 그대로 출력합니다. 심층 신경망에서 가장 많이 쓰입니다.'}
-                                {activation === 'tanh' && 'Tanh: -1과 1 사이의 값으로 압축합니다.'}
-                                {activation === 'step' && 'Step: 0보다 크면 1, 작으면 0입니다. (Perceptron)'}
+                                {activation === 'sigmoid' && 'Sigmoid: 0~1로 압축하는 S자 곡선. 확률 표현에 적합합니다.'}
+                                {activation === 'relu' && 'ReLU: 0보다 작으면 0, 크면 그대로 (가장 많이 사용). 심층 신경망의 기본 활성화 함수입니다.'}
+                                {activation === 'tanh' && 'Tanh: -1~1로 압축. 0을 중심으로 대칭이라 학습이 안정적입니다.'}
+                                {activation === 'step' && 'Step: 0보다 크면 1, 작으면 0. 가장 단순한 활성화 (Perceptron).'}
                             </p>
                         </div>
                     </div>

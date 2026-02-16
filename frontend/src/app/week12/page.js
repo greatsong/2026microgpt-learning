@@ -52,8 +52,8 @@ const NORM_COMPARISON = [
         name: 'Batch Norm',
         formula: 'BN(x) = (x − μ_B) / √(σ²_B + ε)',
         desc: '미니배치(mini-batch: 전체 데이터를 한 번에 처리하면 메모리가 부족하므로, 작은 묶음으로 나눠서 학습) 내의 같은 채널(channel: 데이터의 각 특성. 이미지에서는 RGB 색상, NLP에서는 임베딩의 각 차원) 값들로 평균/분산 계산',
-        pros: 'CNN에서 매우 효과적, 정규화 효과',
-        cons: '배치 크기 의존, 추론 시 별도 통계 필요',
+        pros: 'CNN(합성곱 신경망: 이미지 처리에 특화된 신경망)에서 매우 효과적, 정규화 효과',
+        cons: '배치 크기 의존, 추론(추론 = 학습이 끝난 모델을 실제로 사용하는 단계) 시 별도 통계 필요',
         usedIn: 'ResNet, VGG 등 CNN',
         color: '#3b82f6',
     },
@@ -160,6 +160,7 @@ export default function Week12Page() {
             <div style={styles.header}>
                 <h1 style={styles.title}>⚡ 12주차: 정규화 (Normalization)</h1>
             </div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginBottom: 16, lineHeight: 1.6 }}>신경망에서 데이터가 층을 지날 때마다 숫자 크기가 제멋대로 변합니다. 정규화는 이를 일정한 범위로 맞춰주는 기술입니다.</div>
 
             {/* ── 탭 네비게이션 ── */}
             <div style={styles.tabBar}>
@@ -254,6 +255,9 @@ export default function Week12Page() {
                             <div style={styles.formulaTitle}>📐 RMSNorm 공식</div>
                             <div style={styles.formula}>
                                 RMSNorm(x) = x / √( (1/n) Σ xᵢ² + ε )
+                            </div>
+                            <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginTop: 6 }}>
+                                Σ = 모두 더한다, n = 벡터의 원소 개수
                             </div>
                             <p style={styles.formulaDesc}>
                                 평균을 빼지 않고, 제곱 평균의 제곱근(RMS)으로만 나누어 정규화합니다.
@@ -401,6 +405,7 @@ export default function Week12Page() {
                         <div style={styles.infoBox}>
                             💡 <strong>핵심 차이:</strong> BatchNorm은 <em>배치 간 통계</em>, LayerNorm은 <em>샘플 내 통계</em>,
                             RMSNorm은 <em>평균 없이 RMS만</em> 사용합니다. Transformer 계열 모델은 LayerNorm/RMSNorm을 사용합니다.
+                            <br /><span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>Transformer가 LayerNorm을 쓰는 이유: 문장 길이가 다양하고, 배치 내 문장들이 서로 다른 맥락이므로 배치 단위 통계가 의미 없어 LayerNorm 사용</span>
                         </div>
                         <div style={{
                             padding: '10px 14px',

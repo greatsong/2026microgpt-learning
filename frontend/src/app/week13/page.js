@@ -17,7 +17,7 @@ function estimateParams(layers, dModel) {
     // FFN: d*4d + 4d*d = 8*d^2
     // 총 블록당 ≈ 12*d^2
     const perBlock = 12 * dModel * dModel;
-    const embedding = 50257 * dModel; // vocab * dModel
+    const embedding = 50257 * dModel; // vocab(어휘 크기: 모델이 아는 모든 토큰의 수) * dModel
     const posEmb = 2048 * dModel; // max_seq * dModel (GPT-2 기준)
     return layers * perBlock + embedding + posEmb;
 }
@@ -58,7 +58,7 @@ export default function ArchitectureLab() {
             inputShape: `[1, ${seqLen}, ${dModel}]`,
             outputShape: `[1, ${seqLen}, ${dModel}]`,
             desc: '입력 문장 내의 단어들 간 관계를 계산합니다. "그것"이 무엇을 가리키는지 등을 파악합니다.',
-            paramDetail: `Q, K, V 각각: ${dModel} x ${dModel} = ${(dModel * dModel).toLocaleString()}\nOutput proj: ${dModel} x ${dModel} = ${(dModel * dModel).toLocaleString()}\n합계: 4 x ${dModel}^2 = ${(4 * dModel * dModel).toLocaleString()} params`,
+            paramDetail: `Q, K, V 각각: ${dModel} x ${dModel} = ${(dModel * dModel).toLocaleString()}\n출력 투영(Output proj: Multi-Head 결과를 하나로 합치는 가중치): ${dModel} x ${dModel} = ${(dModel * dModel).toLocaleString()}\n합계: 4 x ${dModel}^2 = ${(4 * dModel * dModel).toLocaleString()} params`,
             color: '#f472b6'
         },
         {
@@ -73,11 +73,11 @@ export default function ArchitectureLab() {
         },
         {
             id: 'ffn',
-            name: 'Feed Forward (MLP)',
+            name: 'Feed Forward (MLP: 다층 퍼셉트론, 가장 기본적인 신경망 구조)',
             shape: `[1, ${seqLen}, ${4 * dModel}]`,
             inputShape: `[1, ${seqLen}, ${dModel}]`,
             outputShape: `[1, ${seqLen}, ${dModel}]`,
-            desc: '각 토큰별로 독립적으로 처리되는 신경망입니다. 지식과 추론 능력이 저장되는 곳으로 추정됩니다.',
+            desc: '각 토큰별로 독립적으로 처리되는 신경망입니다. 지식과 추론 능력이 저장되는 곳으로 추정됩니다. 중간 차원이 4배인 이유: 넓게 펼쳤다 좁히면 더 풍부한 표현을 학습. 원 논문의 실험적 비율.',
             paramDetail: `Linear1: ${dModel} x ${4 * dModel} = ${(dModel * 4 * dModel).toLocaleString()}\nLinear2: ${4 * dModel} x ${dModel} = ${(4 * dModel * dModel).toLocaleString()}\n합계: 8 x ${dModel}^2 = ${(8 * dModel * dModel).toLocaleString()} params`,
             color: '#60a5fa'
         },
@@ -98,7 +98,7 @@ export default function ArchitectureLab() {
             inputShape: `[1, ${seqLen}, ${dModel}]`,
             outputShape: `[1, ${seqLen}, vocab]`,
             desc: '다음 블록으로 전달되거나, 마지막 블록인 경우 단어 확률(Logits)로 변환됩니다.',
-            paramDetail: `LM Head: ${dModel} x 50,257 = ${(dModel * 50257).toLocaleString()} params\n(보통 Embedding weight와 공유)`,
+            paramDetail: `LM Head: ${dModel} x 50,257 = ${(dModel * 50257).toLocaleString()} params\n(보통 Embedding weight와 공유 — '단어→벡터'와 '벡터→단어' 변환이 같은 관계라서 파라미터 절약 가능)`,
             color: '#94a3b8'
         }
     ];
@@ -307,7 +307,7 @@ export default function ArchitectureLab() {
 
                         <div style={{ marginBottom: 8 }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', color: '#94a3b8', marginBottom: 4 }}>
-                                <span>Hidden Size (d_model)</span>
+                                <span>은닉 크기(Hidden Size) (d_model)</span>
                                 <span style={{ color: '#e2e8f0', fontWeight: 700 }}>{dModel}</span>
                             </div>
                             <input
@@ -339,7 +339,7 @@ export default function ArchitectureLab() {
                                 ({totalParams.toLocaleString()} parameters)
                             </div>
                             <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: 2 }}>
-                                블록당: ~{formatParams(12 * dModel * dModel)} | Heads: {numHeads} | Head Dim: {headDim}
+                                블록당: ~{formatParams(12 * dModel * dModel)} | Heads: {numHeads} | 헤드 차원(Head Dim): {headDim}
                             </div>
                         </div>
                     </div>

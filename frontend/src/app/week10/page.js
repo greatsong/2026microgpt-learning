@@ -264,6 +264,7 @@ export default function Week10Page() {
                         <p style={styles.hint}>
                             Query 벡터가 Key 벡터와 비슷할수록(내적 값이 클수록)<br />
                             <strong>Softmax</strong>를 통과한 어텐션 점수가 높아집니다!
+                            <br /><span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>Softmax = 여러 점수를 0~1 확률로 변환하는 함수 (합이 1이 됨)</span>
                         </p>
                         <div style={{
                             marginTop: 10,
@@ -285,6 +286,7 @@ export default function Week10Page() {
                    ══════════════════════════════════════════ */}
                 <div style={styles.card}>
                     <h2 style={styles.cardTitle}>🗺️ Self-Attention 히트맵</h2>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginBottom: 8 }}>Self = 같은 문장 내 단어끼리 서로 주목</div>
                     <p style={styles.desc}>
                         실제 문장에서 각 단어가 다른 단어에 얼마나 &quot;주목&quot;하는지 히트맵으로 확인해보세요!<br />
                         행(→)이 Query, 열(↓)이 Key입니다.
@@ -455,6 +457,9 @@ export default function Week10Page() {
                         <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginTop: 6 }}>
                             각 headᵢ = Attention(Q·Wᵢᵠ, K·Wᵢᴷ, V·Wᵢⱽ)
                         </div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginTop: 6 }}>
+                            Concat = 각 Head 결과를 이어붙이기, W^O = 원래 차원으로 합치는 가중치
+                        </div>
                     </div>
                 </div>
 
@@ -466,9 +471,15 @@ export default function Week10Page() {
                             <strong>&quot;나는 맛있는 [ ? ]를 먹었다&quot;</strong> 문장 완성하기
                         </p>
                         <ul style={{ paddingLeft: 20, margin: 0 }}>
-                            <li><strong>Query (탐색)</strong>: 빈칸 [ ? ]에 들어갈 단어를 찾기 위해 주변을 둘러봅니다.</li>
-                            <li><strong>Key (정보)</strong>: &quot;나는&quot;, &quot;맛있는&quot;, &quot;먹었다&quot; 같은 단어들이 자신의 정보를 가지고 기다립니다.</li>
-                            <li><strong>Attention (집중)</strong>: &quot;먹었다&quot;와 &quot;맛있는&quot;이라는 단어에 <strong>높은 가중치(Attention)</strong>를 둡니다.</li>
+                            <li><strong>Query (탐색)</strong>: 빈칸 [ ? ]에 들어갈 단어를 찾기 위해 주변을 둘러봅니다.
+                                <br /><span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>Query = '나는 뭘 찾고 있는지' (비유: 질문)</span>
+                            </li>
+                            <li><strong>Key (정보)</strong>: &quot;나는&quot;, &quot;맛있는&quot;, &quot;먹었다&quot; 같은 단어들이 자신의 정보를 가지고 기다립니다.
+                                <br /><span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>Key = '나는 이런 정보를 가지고 있다' (비유: 이름표)</span>
+                            </li>
+                            <li><strong>Attention (집중)</strong>: &quot;먹었다&quot;와 &quot;맛있는&quot;이라는 단어에 <strong>높은 가중치(Attention)</strong>를 둡니다.
+                                <br /><span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>Value = 실제 전달할 정보 (비유: 답변 내용)</span>
+                            </li>
                         </ul>
                         <p>
                             트랜스포머 모델은 문장 내의 모든 단어들 사이의 관계(Attention)를 계산하여
@@ -477,6 +488,7 @@ export default function Week10Page() {
                         <div style={styles.tipBox}>
                             <strong>💡 Scaled Dot-Product Attention</strong><br />
                             <code style={{ color: '#fbbf24' }}>Attention(Q,K,V) = softmax(QK<sup>T</sup> / √d<sub>k</sub>) · V</code><br />
+                            <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>K<sup>T</sup>(전치) = K를 세로/가로 뒤집은 것. 이렇게 해야 Q와 K의 내적을 한 번에 계산 가능</span><br />
                             <span style={{ fontSize: '0.82rem' }}>
                                 벡터 차원이 클수록 내적 값이 커지므로, √d<sub>k</sub>로 나눠서 값을 적당한 크기로 조절합니다. 안 나누면 Softmax 결과가 극단적으로 치우쳐요.
                             </span>

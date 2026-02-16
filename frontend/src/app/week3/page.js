@@ -35,6 +35,7 @@ function VectorBuilder() {
         <div style={styles.tabContent}>
             <p style={styles.desc}>
                 단어를 추가/삭제하며 원-핫 벡터가 어떻게 변하는지 관찰하세요!
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)', display: 'block', marginTop: 4 }}>&apos;원-핫(One-Hot)&apos;이란 &apos;하나만 켜져 있다&apos;는 뜻입니다. 벡터에서 딱 하나의 위치만 1(켜짐)이고, 나머지는 모두 0(꺼짐)이에요.</span>
             </p>
 
             <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
@@ -68,6 +69,7 @@ function VectorBuilder() {
                     <span style={{ fontWeight: 700, color: '#f59e0b' }}>&quot;{words[selected]}&quot;</span>
                     <span style={{ color: 'var(--text-dim)', fontSize: '0.8rem' }}>
                         의 원-핫 벡터 ({words.length}차원)
+                        <span style={{ fontSize: '0.7rem', display: 'block', marginTop: 2 }}>벡터(Vector) = 숫자를 나열한 목록. [0, 1, 0]은 3차원 벡터예요.</span>
                     </span>
                 </div>
                 <div style={styles.vectorGrid}>
@@ -89,7 +91,7 @@ function VectorBuilder() {
                 </div>
                 <div style={styles.statsRow}>
                     <div style={styles.statBox}>
-                        <span style={styles.statLabel}>차원 수</span>
+                        <span style={styles.statLabel}>차원 수 <span style={{ fontSize: '0.65rem', color: 'var(--text-dim)', fontWeight: 400 }}>(차원 = 벡터에 들어 있는 숫자의 개수. 단어가 5개면 5차원 벡터가 필요)</span></span>
                         <span style={{ ...styles.statValue, color: words.length > 10 ? '#f43f5e' : '#10b981' }}>
                             {words.length}
                         </span>
@@ -108,7 +110,7 @@ function VectorBuilder() {
             </div>
 
             <div style={styles.tipBox}>
-                💡 단어를 계속 추가해보세요! 벡터 차원이 커지면서 0이 많아지는 <strong>희소 벡터(Sparse Vector)</strong>가 됩니다.
+                💡 단어를 계속 추가해보세요! 벡터 차원이 커지면서 0이 많아지는 <strong>희소 벡터(Sparse Vector)</strong>가 됩니다. 0이 대부분인 벡터는 메모리를 낭비하고, AI가 단어 사이의 관계를 학습하기 어렵게 만듭니다.
             </div>
         </div>
     );
@@ -127,6 +129,7 @@ function DistanceComparison() {
         <div style={styles.tabContent}>
             <p style={styles.desc}>
                 두 단어를 선택하면 원-핫 벡터 간 <strong>유클리드 거리</strong>를 계산합니다.
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)', display: 'block', marginTop: 4 }}>유클리드 거리(Euclidean Distance)는 두 점 사이의 직선 거리입니다. 자로 두 점 사이를 재는 것과 같아요.</span>
             </p>
 
             <div style={{ display: 'flex', gap: 16, marginBottom: 16, flexWrap: 'wrap' }}>
@@ -165,6 +168,11 @@ function DistanceComparison() {
                     <span style={{ fontSize: '2rem', fontWeight: 800, color: '#f43f5e', fontFamily: 'monospace' }}>
                         {wordA === wordB ? '0' : '√2 ≈ 1.414'}
                     </span>
+                    {wordA !== wordB && (
+                        <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)', display: 'block', marginTop: 4 }}>
+                            원-핫 벡터에서 서로 다른 두 단어의 거리는 항상 √2입니다. 1이 있는 위치가 서로 다르기 때문이에요.
+                        </span>
+                    )}
                 </div>
                 {wordA !== wordB && (
                     <div style={{ width: '100%' }}>
@@ -300,7 +308,7 @@ function MemoryCalculator() {
 function EncodingComparison() {
     const words = ['고양이', '강아지', '자동차', '비행기', '피자'];
     const methods = [
-        { name: '인덱스 인코딩', emoji: '#️⃣', description: '각 단어에 번호를 매기기', vectors: words.map((_, i) => String(i)), pros: ['매우 간단', '메모리 효율적 (숫자 1개)'], cons: ['크기 관계가 생겨버림 (고양이 < 강아지?)', '연산 불가능 (3 - 1 = 자동차?)'], color: '#94a3b8' },
+        { name: '인덱스 인코딩', emoji: '#️⃣', description: '인덱스(Index) = 순서 번호. 고양이=0, 강아지=1처럼 단어에 번호를 매기기', vectors: words.map((_, i) => String(i)), pros: ['매우 간단', '메모리 효율적 (숫자 1개)'], cons: ['크기 관계가 생겨버림 (고양이 < 강아지?)', '연산 불가능 (3 - 1 = 자동차?)'], color: '#94a3b8' },
         { name: '원-핫 인코딩', emoji: '1️⃣', description: '단어마다 하나의 위치만 1', vectors: words.map((_, i) => `[${words.map((__, j) => j === i ? '1' : '0').join(',')}]`), pros: ['크기 관계 없음 (동등)', '간단하고 명확'], cons: ['차원이 단어 수만큼 커짐', '모든 거리가 동일 (의미 무시)'], color: '#f59e0b' },
         { name: '임베딩 (4주차!)', emoji: '✨', description: '의미를 담은 밀집 벡터', vectors: ['[0.90, -0.30, 0.30]', '[0.70, -0.10, 0.60]', '[-0.50, 0.70, 0.10]', '[-0.30, 0.80, 0.30]', '[0.33, 0.71, 0.22]'], pros: ['의미적 유사성 반영', '고정된 작은 차원 (효율적)'], cons: ['학습이 필요함 (데이터 필요)', '해석이 어려울 수 있음'], color: '#7c5cfc' },
     ];

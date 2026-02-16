@@ -26,7 +26,7 @@ function generateIdea() {
 
 // ── 복습 체크리스트 ──
 const REVIEW_ITEMS = [
-    { week: '1', title: '토큰화 (BPE)', key: 'BPE 병합 과정을 설명할 수 있다' },
+    { week: '1', title: '토큰화 (BPE)', key: 'BPE(Byte Pair Encoding) 병합 과정을 설명할 수 있다' },
     { week: '2', title: '다음 토큰 예측', key: 'Temperature와 Top-k/Top-p의 차이를 안다' },
     { week: '3', title: '원-핫 인코딩', key: '원-핫 벡터의 한계(차원 폭발, 거리 동일)를 설명할 수 있다' },
     { week: '4', title: '임베딩', key: '코사인 유사도로 단어 간 거리를 측정할 수 있다' },
@@ -99,6 +99,7 @@ export default function Week15Page() {
             />
             <div style={styles.header}>
                 <h1 style={styles.title}>💻 15주차: 바이브 코딩 해커톤</h1>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginTop: 4 }}>바이브 코딩(Vibe Coding) = AI에게 '이런 느낌으로 만들어줘'라고 설명하며 함께 코딩하는 방식</div>
             </div>
 
             {/* 탭 */}
@@ -370,12 +371,12 @@ export default function Week15Page() {
 
                         <div style={styles.twoCol}>
                             <div style={styles.tipCard}>
-                                <h3>🛠️ 추천 도구 (Tech Stack)</h3>
+                                <h3>🛠️ 추천 도구 — 기술 스택(Tech Stack: 프로젝트에 사용하는 기술 조합)</h3>
                                 <ul style={styles.list}>
-                                    <li><strong>Frontend</strong>: React (Next.js) + Vercel 배포</li>
-                                    <li><strong>Backend</strong>: Python (FastAPI) or Vercel Serverless</li>
-                                    <li><strong>AI Model</strong>: OpenAI GPT API / Google Gemini API / Claude API</li>
-                                    <li><strong>Database</strong>: Supabase (무료 Firebase 대안)</li>
+                                    <li><strong>Frontend(화면)</strong>: React (Next.js) + Vercel 배포</li>
+                                    <li><strong>Backend(서버)</strong>: Python (FastAPI) or Vercel Serverless<br /><span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>Serverless = 서버 관리 없이 코드만 올리면 자동 실행되는 방식</span></li>
+                                    <li><strong>AI Model</strong>: OpenAI GPT API / Google Gemini API / Claude API<br /><span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>API = 다른 서비스의 기능을 내 프로그램에서 사용할 수 있게 해주는 접점</span></li>
+                                    <li><strong>Database(데이터 저장)</strong>: Supabase (무료 Firebase 대안)</li>
                                     <li><strong>Coding AI</strong>: Claude Code, Cursor, GitHub Copilot</li>
                                 </ul>
                             </div>
@@ -383,7 +384,7 @@ export default function Week15Page() {
                             <div style={styles.tipCard}>
                                 <h3>📅 3주 해커톤 타임라인</h3>
                                 <ul style={styles.list}>
-                                    <li><strong>1주차</strong>: 아이디어 확정 + 기술 스택 선정 + 프로토타입</li>
+                                    <li><strong>1주차</strong>: 아이디어 확정 + 기술 스택 선정 + 프로토타입(Prototype: 핵심 기능만 담은 초기 시제품)</li>
                                     <li><strong>2주차</strong>: 핵심 기능 개발 + 프롬프트 튜닝</li>
                                     <li><strong>3주차</strong>: UI 다듬기 + 발표 준비 + 배포</li>
                                 </ul>

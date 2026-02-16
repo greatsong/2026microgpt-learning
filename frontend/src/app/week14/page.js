@@ -14,7 +14,7 @@ const TRAINING_DATA = [
             { id: 'A', text: "시스템: 초기화 중... 모델 버전 3.5... 텍스트 생성 모드... (기계적 나열)", type: 'bad' },
             { id: 'B', text: "안녕하세요! 저는 여러분을 돕기 위해 만들어진 AI 어시스턴트입니다. 무엇을 도와드릴까요?", type: 'good' }
         ],
-        feedback: "SFT(Supervised Fine-Tuning) 단계에서는 사람이 작성한 모범 답안을 보고 배웁니다. 자연스럽고 친절한 응답이 좋은 예시입니다."
+        feedback: "SFT(Supervised Fine-Tuning) 단계에서는 사람이 작성한 모범 답안을 보고 배웁니다. 자연스럽고 친절한 응답이 좋은 예시입니다. Base Model은 '질문-대답' 형식의 대화를 모릅니다. SFT는 모범 대화를 보여주어 대화 형식을 가르치는 첫 단계입니다."
     },
     {
         stage: 'sft',
@@ -24,7 +24,7 @@ const TRAINING_DATA = [
             { id: 'A', text: "지구에서 태양까지의 거리는 약 1억 5천만 km(1 AU)입니다. 빛의 속도로 약 8분 20초 걸립니다.", type: 'good' },
             { id: 'B', text: "지구에서 태양까지는 약 3억 km 정도 됩니다. 로켓으로 1시간이면 갈 수 있어요!", type: 'bad' }
         ],
-        feedback: "SFT 단계에서는 정확한 사실을 기반으로 답하는 능력을 학습합니다. 잘못된 수치나 과장된 정보는 할루시네이션(Hallucination)이라 불립니다."
+        feedback: "SFT 단계에서는 정확한 사실을 기반으로 답하는 능력을 학습합니다. 잘못된 수치나 과장된 정보는 할루시네이션(Hallucination, 환각) = AI가 사실이 아닌 정보를 자신 있게 만들어내는 현상이라 불립니다."
     },
     {
         stage: 'sft',
@@ -46,7 +46,7 @@ const TRAINING_DATA = [
             { id: 'A', text: "와이파이 해킹에는 aircrack-ng 같은 도구를 사용할 수 있습니다. 먼저 패킷을 캡처하고...", type: 'bad' },
             { id: 'B', text: "죄송합니다. 타인의 네트워크에 무단으로 접속하는 것은 불법이므로 도와드릴 수 없습니다. 본인 와이파이 보안 강화 방법은 안내해드릴 수 있어요.", type: 'good' }
         ],
-        feedback: "RM(Reward Model) 단계에서는 '도움이 되지만 해로운(Harmful)' 답변에 낮은 점수를 줍니다. 불법 행위 조력은 명확히 거절해야 합니다."
+        feedback: "RM(Reward Model) 단계에서는 '도움이 되지만 해로운(Harmful)' 답변에 낮은 점수를 줍니다. 불법 행위 조력은 명확히 거절해야 합니다. 모든 질문에 사람이 모범답안을 쓸 수 없으므로, RM이 사람 대신 답변의 질을 평가합니다."
     },
     {
         stage: 'rm',
@@ -535,7 +535,7 @@ export default function RLHFLab() {
                         <p style={{ marginBottom: 10 }}>
                             <strong>1. 정렬 (Alignment) 문제</strong><br />
                             <span style={{ fontSize: '0.82rem', color: '#a78bfa' }}>(Alignment = AI의 답변이 사람의 의도/가치관과 얼마나 잘 맞는지를 나타내는 점수)</span><br />
-                            인터넷 데이터로만 학습한 &quot;Base Model&quot;은 욕설, 편견, 가짜뉴스까지 그대로 따라합니다.
+                            인터넷 데이터로만 학습한 &quot;Base Model(기본 모델: RLHF 전의 순수 언어 모델)&quot;은 욕설, 편견, 가짜뉴스까지 그대로 따라합니다.
                             여러분이 방금 한 것처럼 <strong>&quot;인간의 가치관&quot;</strong>에 맞게 AI를 튜닝하는 과정이 필수적입니다.
                         </p>
                         <p style={{ marginBottom: 10 }}>

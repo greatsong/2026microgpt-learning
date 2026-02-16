@@ -222,7 +222,9 @@ export default function PredictionLab() {
                                 </div>
                                 <div style={{ marginTop: 12 }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                                        <label style={{ fontSize: '0.78rem', color: 'var(--text-dim)' }}>후보 단어 &amp; Logit 값:</label>
+                                        <label style={{ fontSize: '0.78rem', color: 'var(--text-dim)' }}>후보 단어 &amp; Logit 값:
+                                            <span style={{ fontSize: '0.72rem', display: 'block', marginTop: 2 }}>AI 모델은 각 단어에 대해 &apos;다음에 나올 가능성&apos;을 점수(Logit)로 매깁니다. 아직 확률이 아닌 원점수라서, Softmax를 통해 확률로 변환해야 합니다.</span>
+                                        </label>
                                         <button onClick={addCustomEntry} style={styles.addBtn} disabled={customEntries.length >= 8}>+ 추가</button>
                                     </div>
                                     {customEntries.map((entry, idx) => (
@@ -269,14 +271,18 @@ export default function PredictionLab() {
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'var(--text-dim)', marginTop: 2 }}>
                                     <span>🎯 집중 (0.1)</span><span>🌊 분산 (3.0)</span>
                                 </div>
+                                <p style={{ fontSize: '0.72rem', color: 'var(--text-dim)', marginTop: 6, lineHeight: 1.5 }}>
+                                    물리학에서 온도가 높으면 분자가 활발히 움직이듯, Temperature가 높으면 다양한 단어가 선택될 수 있고, 낮으면 가장 확실한 단어에 집중합니다.
+                                </p>
                             </div>
 
                             {/* Formula */}
                             <div style={styles.formulaBox}>
                                 <code style={{ fontSize: '0.82rem', color: '#fbbf24' }}>P(wᵢ) = exp(zᵢ / T) / Σ exp(zⱼ / T)</code>
+                                <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>&nbsp;&nbsp;Σ(시그마) = &apos;모두 더한다&apos;는 수학 기호</span>
                                 <div style={{ fontSize: '0.72rem', color: 'var(--text-dim)', marginTop: 6, lineHeight: 1.5, textAlign: 'left' }}>
                                     <strong>z</strong> = logit (모델이 각 단어에 매긴 &quot;원점수&quot;, 높을수록 유력한 후보)<br/>
-                                    <strong>exp</strong> = 지수 함수 (e ≈ 2.718을 z번 곱한 값, 점수 차이를 확률 차이로 증폭)<br/>
+                                    <strong>exp</strong> = 지수 함수 (exp(z) = z가 클수록 급격히 커지는 함수. 점수 차이를 확률 차이로 증폭)<br/>
                                     <strong>T</strong> = Temperature (나누면 점수 차이가 줄어들어 확률이 고르게 됨)
                                 </div>
                             </div>
@@ -326,7 +332,9 @@ export default function PredictionLab() {
                 {/* 3. Probabilities Visualization */}
                 <div style={styles.card}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 8 }}>
-                        <h3 style={{ ...styles.label, marginBottom: 0 }}>3. 확률 분포 (Softmax → 필터링)</h3>
+                        <h3 style={{ ...styles.label, marginBottom: 0 }}>3. 확률 분포 (Softmax → 필터링)
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)', fontWeight: 400, textTransform: 'none', letterSpacing: 0, display: 'block', marginTop: 2 }}>Softmax는 &apos;soft(부드러운) + max(최대값)&apos;의 합성어. 가장 큰 값 하나만 고르는 대신, 모든 값을 확률로 부드럽게 변환합니다.</span>
+                        </h3>
                         <button className="btn-nova" onClick={handleSpin} disabled={isSpinning} style={{ padding: '8px 24px' }}>
                             {isSpinning ? '🎲 굴리는 중...' : '🎲 단어 생성하기!'}
                         </button>
@@ -373,6 +381,7 @@ export default function PredictionLab() {
                     <div style={styles.theoryContent}>
                         <p>
                             <strong>1. 자기회귀(Autoregressive) 생성</strong><br />
+                            <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>&apos;자기회귀(Autoregressive)&apos;란 자기가 만든 결과를 다시 입력으로 사용한다는 뜻입니다. AI는 한 번에 전체 문장을 만들 수 없어서, 앞에 쓴 내용을 보면서 한 단어씩 생성합니다.</span><br />
                             GPT와 같은 언어 모델은 <strong>한 번에 하나의 토큰(단어)</strong>만 예측합니다.
                             예측한 토큰을 입력 뒤에 붙이고, 다시 다음 토큰을 예측하는 과정을 반복합니다.
                         </p>
@@ -411,7 +420,7 @@ export default function PredictionLab() {
                                 <div style={{ ...styles.compCell, fontWeight: 700, color: '#94a3b8' }}>단점</div>
                             </div>
                             <div style={styles.compRow}>
-                                <div style={{ ...styles.compCell, color: '#34d399' }}>Greedy (T→0)</div>
+                                <div style={{ ...styles.compCell, color: '#34d399' }}>Greedy(탐욕적: 항상 가장 확률 높은 단어만 선택, T≈0)</div>
                                 <div style={styles.compCell}>가장 정확</div>
                                 <div style={styles.compCell}>반복적, 재미없음</div>
                             </div>

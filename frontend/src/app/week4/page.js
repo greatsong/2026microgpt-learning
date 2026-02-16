@@ -28,101 +28,151 @@ const PRESET_WORDS = {
     ],
 };
 
-// ── 벡터 연산 체험 컴포넌트 ──
-function VectorArithmeticPanel() {
-    const WORD_VECTORS = {
-        '왕': [0.8, 0.6, 0.3],
-        '여왕': [0.75, 0.65, 0.7],
-        '남자': [0.3, 0.1, -0.2],
-        '여자': [0.25, 0.15, 0.2],
-        '아들': [0.5, 0.3, -0.1],
-        '딸': [0.45, 0.35, 0.3],
-        '한국': [0.1, 0.9, 0.4],
-        '서울': [0.15, 0.85, 0.6],
-        '일본': [0.2, 0.8, 0.35],
-        '도쿄': [0.25, 0.75, 0.55],
-    };
+// VectorArithmeticPanel은 /week4/practice 페이지로 이동
+function __REMOVED__() { /* eslint-disable-line */
+    const [gloveData, setGloveData] = useState(null);
+    const [selectedExample, setSelectedExample] = useState(0);
+    const [customMode, setCustomMode] = useState(false);
+    const [wordA, setWordA] = useState('king');
+    const [wordB, setWordB] = useState('man');
+    const [wordC, setWordC] = useState('woman');
 
-    const [wordA, setWordA] = useState('왕');
-    const [wordB, setWordB] = useState('남자');
-    const [wordC, setWordC] = useState('여자');
+    useEffect(() => {
+        fetch('/data/glove_vectors.json')
+            .then(r => r.json())
+            .then(data => setGloveData(data))
+            .catch(() => {});
+    }, []);
 
-    const vecA = WORD_VECTORS[wordA];
-    const vecB = WORD_VECTORS[wordB];
-    const vecC = WORD_VECTORS[wordC];
+    if (!gloveData) return (
+        <div style={simStyles.funFact}>
+            <strong>🧮 벡터 연산 체험</strong>
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-dim)', marginTop: 8 }}>임베딩 데이터 로딩 중...</p>
+        </div>
+    );
+
+    const vectors = gloveData.words;
+    const labels = gloveData.labels;
+    const allWords = Object.keys(vectors);
+
+    const ex = GLOVE_EXAMPLES[selectedExample];
+    const curA = customMode ? wordA : ex.a;
+    const curB = customMode ? wordB : ex.b;
+    const curC = customMode ? wordC : ex.c;
+
+    const vecA = vectors[curA];
+    const vecB = vectors[curB];
+    const vecC = vectors[curC];
+
+    if (!vecA || !vecB || !vecC) return null;
 
     const resultVec = vecA.map((v, i) => v - vecB[i] + vecC[i]);
 
     const cosSim = (a, b) => {
-        const dot = a.reduce((s, v, i) => s + v * b[i], 0);
-        const magA = Math.sqrt(a.reduce((s, v) => s + v * v, 0));
-        const magB = Math.sqrt(b.reduce((s, v) => s + v * v, 0));
+        let dot = 0, magA = 0, magB = 0;
+        for (let i = 0; i < a.length; i++) {
+            dot += a[i] * b[i]; magA += a[i] * a[i]; magB += b[i] * b[i];
+        }
         if (magA === 0 || magB === 0) return 0;
-        return dot / (magA * magB);
+        return dot / (Math.sqrt(magA) * Math.sqrt(magB));
     };
 
-    const rankings = Object.entries(WORD_VECTORS)
-        .filter(([w]) => w !== wordA && w !== wordB && w !== wordC)
-        .map(([word, vec]) => ({ word, sim: cosSim(resultVec, vec) }))
+    const rankings = allWords
+        .filter(w => w !== curA && w !== curB && w !== curC)
+        .map(word => ({ word, label: labels[word], sim: cosSim(resultVec, vectors[word]) }))
         .sort((a, b) => b.sim - a.sim);
 
     const bestMatch = rankings[0];
-    const words = Object.keys(WORD_VECTORS);
+    const label = (w) => labels[w] ? `${labels[w]}(${w})` : w;
 
     return (
         <div style={simStyles.funFact}>
-            <strong>🧮 벡터 연산 체험</strong>
-            <p style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginTop: 4, marginBottom: 10 }}>
-                단어 벡터의 빼기/더하기로 의미를 조합해보세요!
+            <strong>🧮 실제 임베딩으로 벡터 연산 체험</strong>
+            <p style={{ fontSize: '0.7rem', color: 'var(--text-dim)', marginTop: 2, marginBottom: 4 }}>
+                Stanford GloVe — Wikipedia + Gigaword 학습 데이터, 300차원 벡터
+            </p>
+            <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: 10 }}>
+                실제 AI가 학습한 단어 벡터로 빼기/더하기 연산을 해보세요!
             </p>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 10 }}>
-                <select className="select-cosmic" style={{ fontSize: '0.8rem', padding: '6px 8px', width: 70 }}
-                    value={wordA} onChange={(e) => setWordA(e.target.value)}>
-                    {words.map(w => <option key={w} value={w}>{w}</option>)}
-                </select>
-                <span style={{ fontWeight: 800, color: '#f43f5e', fontSize: '1.1rem' }}>−</span>
-                <select className="select-cosmic" style={{ fontSize: '0.8rem', padding: '6px 8px', width: 70 }}
-                    value={wordB} onChange={(e) => setWordB(e.target.value)}>
-                    {words.map(w => <option key={w} value={w}>{w}</option>)}
-                </select>
-                <span style={{ fontWeight: 800, color: '#10b981', fontSize: '1.1rem' }}>+</span>
-                <select className="select-cosmic" style={{ fontSize: '0.8rem', padding: '6px 8px', width: 70 }}
-                    value={wordC} onChange={(e) => setWordC(e.target.value)}>
-                    {words.map(w => <option key={w} value={w}>{w}</option>)}
-                </select>
+            {/* 추천 예시 버튼 */}
+            {!customMode && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 10, justifyContent: 'center' }}>
+                    {GLOVE_EXAMPLES.map((ex, i) => (
+                        <button key={i} onClick={() => setSelectedExample(i)} style={{
+                            padding: '3px 8px', borderRadius: 6, fontSize: '0.68rem', cursor: 'pointer',
+                            border: i === selectedExample ? '1px solid #7c5cfc' : '1px solid rgba(255,255,255,0.1)',
+                            background: i === selectedExample ? 'rgba(124,92,252,0.15)' : 'rgba(255,255,255,0.03)',
+                            color: i === selectedExample ? '#a78bfa' : 'var(--text-dim)',
+                        }}>
+                            {ex.emoji} {ex.label}
+                        </button>
+                    ))}
+                </div>
+            )}
+
+            {/* 자유 모드 토글 */}
+            <div style={{ textAlign: 'center', marginBottom: 8 }}>
+                <button onClick={() => setCustomMode(!customMode)} style={{
+                    padding: '4px 12px', borderRadius: 6, fontSize: '0.72rem', cursor: 'pointer',
+                    border: '1px solid rgba(251,191,36,0.3)',
+                    background: customMode ? 'rgba(251,191,36,0.15)' : 'transparent',
+                    color: '#fbbf24',
+                }}>
+                    {customMode ? '📋 추천 예시로 돌아가기' : '✏️ 자유롭게 조합하기'}
+                </button>
             </div>
 
+            {/* 자유 모드: 드롭다운 */}
+            {customMode && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 10 }}>
+                    <select className="select-cosmic" style={{ fontSize: '0.75rem', padding: '5px 6px' }}
+                        value={wordA} onChange={(e) => setWordA(e.target.value)}>
+                        {allWords.map(w => <option key={w} value={w}>{labels[w]}({w})</option>)}
+                    </select>
+                    <span style={{ fontWeight: 800, color: '#f43f5e', fontSize: '1.1rem' }}>−</span>
+                    <select className="select-cosmic" style={{ fontSize: '0.75rem', padding: '5px 6px' }}
+                        value={wordB} onChange={(e) => setWordB(e.target.value)}>
+                        {allWords.map(w => <option key={w} value={w}>{labels[w]}({w})</option>)}
+                    </select>
+                    <span style={{ fontWeight: 800, color: '#10b981', fontSize: '1.1rem' }}>+</span>
+                    <select className="select-cosmic" style={{ fontSize: '0.75rem', padding: '5px 6px' }}
+                        value={wordC} onChange={(e) => setWordC(e.target.value)}>
+                        {allWords.map(w => <option key={w} value={w}>{labels[w]}({w})</option>)}
+                    </select>
+                </div>
+            )}
+
+            {/* 수식 표시 */}
             <div style={{
                 padding: '8px 12px', borderRadius: 8, marginBottom: 8,
-                background: 'rgba(124, 92, 252, 0.08)', border: '1px solid rgba(124, 92, 252, 0.15)',
-                textAlign: 'center',
+                background: 'rgba(124, 92, 252, 0.06)', border: '1px solid rgba(124, 92, 252, 0.12)',
+                textAlign: 'center', fontSize: '0.85rem', color: '#cbd5e1',
             }}>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-dim)', marginBottom: 4 }}>연산 결과 벡터</div>
-                <code style={{ fontSize: '0.78rem', color: '#a78bfa', fontWeight: 600 }}>
-                    [{resultVec.map(v => v.toFixed(2)).join(', ')}]
-                </code>
+                {label(curA)} <span style={{ color: '#f43f5e', fontWeight: 800 }}>−</span> {label(curB)} <span style={{ color: '#10b981', fontWeight: 800 }}>+</span> {label(curC)} <span style={{ color: '#fbbf24' }}>=</span> ?
             </div>
 
+            {/* 결과 */}
             {bestMatch && (
                 <div style={{
-                    padding: '10px 14px', borderRadius: 8,
+                    padding: '12px 14px', borderRadius: 8,
                     background: 'rgba(16, 185, 129, 0.08)', border: '1px solid rgba(16, 185, 129, 0.2)',
                     textAlign: 'center',
                 }}>
-                    <div style={{ fontSize: '0.72rem', color: 'var(--text-dim)', marginBottom: 2 }}>가장 가까운 단어</div>
-                    <span style={{ fontSize: '1.1rem', fontWeight: 800, color: '#10b981' }}>{bestMatch.word}</span>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text-dim)', marginBottom: 2 }}>가장 가까운 단어 (300차원 코사인 유사도)</div>
+                    <span style={{ fontSize: '1.3rem', fontWeight: 800, color: '#10b981' }}>{bestMatch.label || bestMatch.word}</span>
                     <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginLeft: 6 }}>
-                        (유사도 {Math.round(bestMatch.sim * 100)}%)
+                        ({bestMatch.word}, 유사도 {Math.round(bestMatch.sim * 100)}%)
                     </span>
-                    <div style={{ marginTop: 6, fontSize: '0.78rem', color: '#fbbf24' }}>
-                        {wordA} − {wordB} + {wordC} ≈ <strong>{bestMatch.word}</strong>
+                    <div style={{ marginTop: 6, fontSize: '0.82rem', color: '#fbbf24', fontWeight: 600 }}>
+                        {label(curA)} − {label(curB)} + {label(curC)} ≈ <strong>{bestMatch.label || bestMatch.word}</strong>
                     </div>
                 </div>
             )}
 
+            {/* 순위 */}
             <div style={{ marginTop: 8 }}>
-                <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)', marginBottom: 4 }}>후보 단어 유사도 순위:</div>
+                <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)', marginBottom: 4 }}>Top 5 후보:</div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
                     {rankings.slice(0, 5).map((r, i) => (
                         <span key={r.word} style={{
@@ -131,10 +181,15 @@ function VectorArithmeticPanel() {
                             color: i === 0 ? '#10b981' : 'var(--text-dim)',
                             fontWeight: i === 0 ? 700 : 400,
                         }}>
-                            {r.word} {Math.round(r.sim * 100)}%
+                            {r.label || r.word} {Math.round(r.sim * 100)}%
                         </span>
                     ))}
                 </div>
+            </div>
+
+            {/* 출처 표기 */}
+            <div style={{ marginTop: 8, fontSize: '0.62rem', color: 'var(--text-dim)', textAlign: 'center', opacity: 0.7 }}>
+                데이터 출처: GloVe (Stanford NLP) — 51개 단어, 300차원 실제 임베딩 벡터
             </div>
         </div>
     );
@@ -177,6 +232,7 @@ function CosineSimilarityPanel({ stars }) {
     return (
         <div className="glass-card" style={simStyles.panel}>
             <label className="label-cosmic">📐 코사인 유사도 계산기</label>
+            <p style={{ fontSize: '0.75rem', color: 'var(--text-dim)', lineHeight: 1.4, marginBottom: 2 }}>코사인 유사도 = 두 벡터가 얼마나 같은 방향을 가리키는지 (1에 가까울수록 비슷)</p>
             <p style={simStyles.hint}>두 단어를 선택하면 유사도, 거리, 각도를 계산합니다!</p>
 
             <div style={{ display: 'flex', gap: 10 }}>
@@ -230,8 +286,17 @@ function CosineSimilarityPanel({ stars }) {
                 </div>
             )}
 
-            {/* Word2Vec 벡터 연산 체험 */}
-            <VectorArithmeticPanel />
+            {/* 벡터 연산 실습 페이지 링크 */}
+            <div style={simStyles.funFact}>
+                <strong>🧮 벡터 연산 더 해보고 싶다면?</strong>
+                <p style={{ fontSize: '0.78rem', color: 'var(--text-dim)', margin: '6px 0' }}>
+                    실제 AI 임베딩(GloVe 300차원)으로 벡터 빼기/더하기를 해볼 수 있어요!
+                </p>
+                <button className="btn-nova" style={{ padding: '8px 20px', fontSize: '0.82rem' }}
+                    onClick={() => window.location.href = '/week4/practice'}>
+                    <span>📐 코사인 유사도 실습 페이지로</span>
+                </button>
+            </div>
         </div>
     );
 }
@@ -426,6 +491,9 @@ export default function Week4Page() {
                         단어를 입력하고 좌표를 움직여 보세요.<br />
                         모든 친구들의 별이 실시간으로 연결됩니다! ✨
                     </p>
+                    <p style={{ fontSize: '0.75rem', color: 'var(--text-dim)', lineHeight: 1.5, marginTop: 4 }}>
+                        임베딩(Embedding) = 단어를 숫자 좌표로 변환하는 기술. 비슷한 의미의 단어는 가까운 좌표에, 다른 의미는 먼 좌표에 놓입니다.
+                    </p>
                 </div>
 
                 {/* 접속 현황 */}
@@ -531,12 +599,12 @@ export default function Week4Page() {
                     <label className="label-cosmic">🤖 LLM의 뇌를 들여다보면?</label>
                     <div style={{ ...styles.description, fontSize: '0.85rem' }}>
                         <p style={{ marginBottom: 10 }}>
-                            <strong>1. 의미의 공간 (Vector Space)</strong><br />
-                            LLM은 단어의 뜻을 사전에서 찾는 게 아니라, 이 3D 은하수 같은 <strong>"벡터 공간"</strong>에서의 위치로 이해합니다.
-                            "왕"과 "여왕"은 가깝고, "사과"는 멀리 떨어져 있겠죠?
+                            <strong>1. 의미의 공간 (Vector Space)</strong><span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}> — 벡터 = 숫자들의 목록, 공간 = 그 숫자들이 만드는 좌표계</span><br />
+                            LLM은 단어의 뜻을 사전에서 찾는 게 아니라, 이 3D 은하수 같은 <strong>&quot;벡터 공간&quot;</strong>에서의 위치로 이해합니다.
+                            &quot;왕&quot;과 &quot;여왕&quot;은 가깝고, &quot;사과&quot;는 멀리 떨어져 있겠죠?
                         </p>
                         <p>
-                            <strong>2. 검색 증강 생성 (RAG)</strong><br />
+                            <strong>2. 검색 증강 생성 (RAG)</strong><span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}> — Retrieval-Augmented Generation: 검색해서 찾은 정보를 바탕으로 답변 생성</span><br />
                             여러분이 챗봇에게 회사 문서를 물어보면, AI는 그 문서들을 벡터로 바꿔서 저장해둡니다.
                             그리고 질문과 가장 가까운 위치에 있는 문서를 찾아(Search) 답변을 생성(Generate)합니다!
                         </p>
