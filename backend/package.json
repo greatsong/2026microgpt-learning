@@ -1,0 +1,16 @@
+{
+  "name": "gpt-play-backend",
+  "version": "1.0.0",
+  "description": "GPT야 놀자! - 실시간 교실 동기화 백엔드 서버",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.7.4",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1"
+  }
+}
