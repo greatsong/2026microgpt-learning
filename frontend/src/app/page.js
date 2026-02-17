@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useClassStore } from '@/stores/useClassStore';
 import { connectSocket } from '@/lib/socket';
+import s from './page.module.css';
 
 const SCHOOLS = [
   { code: 'SEOUL_HIGH', name: '서울고등학교', emoji: '🏫' },
@@ -25,9 +26,9 @@ function generateParticles(count) {
 
 export default function HomePage() {
   const router = useRouter();
-  const setStudentInfo = useClassStore((s) => s.setStudentInfo);
-  const setConnected = useClassStore((s) => s.setConnected);
-  const addNotification = useClassStore((s) => s.addNotification);
+  const setStudentInfo = useClassStore((st) => st.setStudentInfo);
+  const setConnected = useClassStore((st) => st.setConnected);
+  const addNotification = useClassStore((st) => st.addNotification);
 
   const [name, setName] = useState('');
   const [school, setSchool] = useState('');
@@ -77,14 +78,14 @@ export default function HomePage() {
   };
 
   return (
-    <div style={styles.container}>
+    <div className={s.container}>
       {/* 배경 파티클 — client-only to prevent hydration mismatch */}
-      <div style={styles.bgParticles}>
+      <div className={s.bgParticles}>
         {particles.map((p, i) => (
           <div
             key={i}
+            className={s.particle}
             style={{
-              ...styles.particle,
               left: p.left,
               top: p.top,
               width: p.width,
@@ -97,71 +98,67 @@ export default function HomePage() {
       </div>
 
       {/* 메인 카드 */}
-      <div style={styles.card} className="glass-card animate-fade-in">
+      <div className={`glass-card animate-fade-in ${s.card}`}>
         {/* 로고 영역 */}
-        <div style={styles.logoSection}>
-          <div style={styles.logoEmoji} className="animate-float">🚀</div>
-          <h1 style={styles.title}>
+        <div className={s.logoSection}>
+          <div className={`animate-float ${s.logoEmoji}`}>🚀</div>
+          <h1 className={s.title}>
             <span className="text-gradient">GPT야 놀자!</span>
           </h1>
-          <p style={styles.subtitle}>3D 인공지능 융합 교육 플랫폼</p>
-          <div style={styles.schoolBadges}>
-            {SCHOOLS.map((s) => (
-              <span key={s.code} className="badge-glow">
-                {s.emoji} {s.name}
+          <p className={s.subtitle}>3D 인공지능 융합 교육 플랫폼</p>
+          <div className={s.schoolBadges}>
+            {SCHOOLS.map((sc) => (
+              <span key={sc.code} className="badge-glow">
+                {sc.emoji} {sc.name}
               </span>
             ))}
           </div>
         </div>
 
         {/* 입력 폼 */}
-        <div style={styles.form}>
-          <div style={styles.field}>
+        <div className={s.form}>
+          <div>
             <label className="label-cosmic">닉네임</label>
             <input
-              className="input-cosmic"
-              style={fieldErrors.name ? styles.inputError : undefined}
+              className={`input-cosmic ${fieldErrors.name ? s.inputError : ''}`}
               placeholder="예: 스페이스 라이더 석리"
               value={name}
               onChange={(e) => { setName(e.target.value); setFieldErrors(prev => ({ ...prev, name: false })); }}
               maxLength={20}
             />
-            {fieldErrors.name && <p style={styles.errorMsg}>필수 입력 항목입니다</p>}
+            {fieldErrors.name && <p className={s.errorMsg}>필수 입력 항목입니다</p>}
           </div>
 
-          <div style={styles.field}>
+          <div>
             <label className="label-cosmic">소속 학교</label>
             <select
-              className="select-cosmic"
-              style={fieldErrors.school ? styles.inputError : undefined}
+              className={`select-cosmic ${fieldErrors.school ? s.inputError : ''}`}
               value={school}
               onChange={(e) => { setSchool(e.target.value); setFieldErrors(prev => ({ ...prev, school: false })); }}
             >
               <option value="">학교를 선택하세요</option>
-              {SCHOOLS.map((s) => (
-                <option key={s.code} value={s.code}>
-                  {s.name}
+              {SCHOOLS.map((sc) => (
+                <option key={sc.code} value={sc.code}>
+                  {sc.name}
                 </option>
               ))}
             </select>
-            {fieldErrors.school && <p style={styles.errorMsg}>학교를 선택해주세요</p>}
+            {fieldErrors.school && <p className={s.errorMsg}>학교를 선택해주세요</p>}
           </div>
 
-          <div style={styles.field}>
+          <div>
             <label className="label-cosmic">비밀 입장 코드</label>
             <input
-              className="input-cosmic"
-              style={fieldErrors.room ? styles.inputError : undefined}
+              className={`input-cosmic ${fieldErrors.room ? s.inputError : ''}`}
               placeholder="선생님이 알려준 코드를 입력하세요"
               value={room}
               onChange={(e) => { setRoom(e.target.value); setFieldErrors(prev => ({ ...prev, room: false })); }}
             />
-            {fieldErrors.room && <p style={styles.errorMsg}>필수 입력 항목입니다</p>}
+            {fieldErrors.room && <p className={s.errorMsg}>필수 입력 항목입니다</p>}
           </div>
 
           <button
-            className="btn-nova"
-            style={styles.joinBtn}
+            className={`btn-nova ${s.joinBtn}`}
             onClick={handleJoin}
             disabled={isJoining || !name.trim() || !school || !room.trim()}
           >
@@ -170,9 +167,9 @@ export default function HomePage() {
         </div>
 
         {/* 하단 안내 */}
-        <p style={styles.hint}>
+        <p className={s.hint}>
           선생님이신가요?{' '}
-          <a href="/dashboard" style={styles.link}>
+          <a href="/dashboard" className={s.link}>
             관제탑 열기 →
           </a>
         </p>
@@ -180,92 +177,3 @@ export default function HomePage() {
     </div>
   );
 }
-
-const styles = {
-  container: {
-    height: '100vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'relative',
-    overflow: 'hidden',
-  },
-  bgParticles: {
-    position: 'absolute',
-    inset: 0,
-    pointerEvents: 'none',
-  },
-  particle: {
-    position: 'absolute',
-    borderRadius: '50%',
-    background: 'rgba(124, 92, 252, 0.4)',
-    animation: 'pulseGlow 3s ease-in-out infinite',
-  },
-  card: {
-    width: '100%',
-    maxWidth: 480,
-    padding: '48px 40px',
-    margin: '20px',
-    zIndex: 2,
-  },
-  logoSection: {
-    textAlign: 'center',
-    marginBottom: 36,
-  },
-  logoEmoji: {
-    fontSize: '4rem',
-    marginBottom: 12,
-    display: 'inline-block',
-  },
-  title: {
-    fontSize: '2.4rem',
-    fontWeight: 800,
-    letterSpacing: '-0.02em',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: '1rem',
-    color: 'var(--text-secondary)',
-    fontWeight: 400,
-    marginBottom: 16,
-  },
-  schoolBadges: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: 6,
-    justifyContent: 'center',
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 20,
-  },
-  field: {},
-  joinBtn: {
-    width: '100%',
-    padding: '16px',
-    fontSize: '1.1rem',
-    marginTop: 8,
-  },
-  hint: {
-    textAlign: 'center',
-    marginTop: 24,
-    fontSize: '0.85rem',
-    color: 'var(--text-dim)',
-  },
-  link: {
-    color: 'var(--accent-pulsar)',
-    textDecoration: 'none',
-    fontWeight: 600,
-  },
-  inputError: {
-    borderColor: '#f43f5e',
-    boxShadow: '0 0 0 2px rgba(244, 63, 94, 0.2)',
-  },
-  errorMsg: {
-    fontSize: '0.75rem',
-    color: '#f43f5e',
-    marginTop: 4,
-    fontWeight: 500,
-  },
-};
