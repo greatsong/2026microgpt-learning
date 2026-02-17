@@ -1,9 +1,11 @@
 'use client';
 
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function WeekIntroPage() {
     const router = useRouter();
+    const [showDeepDive, setShowDeepDive] = useState(false);
 
     return (
         <div style={styles.container}>
@@ -82,6 +84,62 @@ export default function WeekIntroPage() {
                             <li>GPT는 오직 <strong>생성(Generation)</strong> 에 특화된 Decoder 부분만 떼어내어 엄청나게 크게 키운 모델입니다.</li>
                         </ul>
                     </div>
+                </div>
+
+                {/* 한 걸음 더: 파라미터 수와 모델 스케일 */}
+                <div style={{
+                    marginTop: 20, borderRadius: 12,
+                    border: '1px solid rgba(124, 92, 252, 0.2)', overflow: 'hidden',
+                }}>
+                    <button
+                        onClick={() => setShowDeepDive(!showDeepDive)}
+                        style={{
+                            width: '100%', padding: '12px 16px',
+                            background: 'rgba(124, 92, 252, 0.08)', border: 'none',
+                            color: '#a78bfa', fontSize: '0.9rem', fontWeight: 600,
+                            cursor: 'pointer', textAlign: 'left',
+                            display: 'flex', alignItems: 'center', gap: 8,
+                        }}
+                    >
+                        {showDeepDive ? '▼' : '▶'} 한 걸음 더: GPT의 파라미터 수는 어떻게 계산될까?
+                    </button>
+                    {showDeepDive && (
+                        <div style={{
+                            padding: 16, background: 'rgba(124, 92, 252, 0.04)',
+                            fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.7, textAlign: 'left',
+                        }}>
+                            <p style={{ marginBottom: 10 }}>
+                                GPT의 &quot;크기&quot;를 결정하는 세 가지 핵심 변수가 있어요:
+                            </p>
+                            <p style={{ marginBottom: 8 }}>
+                                <strong style={{ color: '#60a5fa' }}>d_model (임베딩 차원)</strong> —
+                                각 토큰을 표현하는 벡터의 크기. GPT-3는 <strong>12,288</strong>차원!
+                            </p>
+                            <p style={{ marginBottom: 8 }}>
+                                <strong style={{ color: '#10b981' }}>n_layers (블록 수)</strong> —
+                                Transformer 블록을 몇 개 쌓느냐. GPT-3는 <strong>96개</strong>, GPT-2는 <strong>48개</strong>.
+                                블록이 많을수록 더 깊은 추론이 가능하지만 계산 비용도 증가합니다.
+                            </p>
+                            <p style={{ marginBottom: 10 }}>
+                                <strong style={{ color: '#f59e0b' }}>n_heads (어텐션 헤드 수)</strong> —
+                                Multi-Head Attention에서 &quot;몇 가지 관점&quot;으로 동시에 보느냐. GPT-3는 <strong>96개</strong> 헤드.
+                            </p>
+                            <p style={{ marginBottom: 8 }}>
+                                이 값들을 조합하면 대략적인 파라미터 수를 계산할 수 있어요:
+                            </p>
+                            <div style={{
+                                padding: 12, borderRadius: 8, background: 'rgba(15, 10, 40, 0.6)',
+                                fontFamily: 'monospace', fontSize: '0.82rem', color: '#60a5fa', textAlign: 'center',
+                                marginBottom: 10,
+                            }}>
+                                파라미터 ≈ 12 × n_layers × d_model²
+                            </div>
+                            <p>
+                                <strong style={{ color: '#f43f5e' }}>GPT-3의 경우:</strong> 12 × 96 × 12,288² ≈ <strong>175B (1,750억 개)</strong>!
+                                실험실에서 블록 수를 바꿔가며 모델 크기가 어떻게 변하는지 직접 확인해보세요.
+                            </p>
+                        </div>
+                    )}
                 </div>
 
                 <button

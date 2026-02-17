@@ -26,6 +26,24 @@ export default function WeekIntroPage() {
 
                 <p style={styles.subtitle}>AI가 글자를 읽는 법</p>
 
+                {/* 브리지: AI 여정의 시작 */}
+                <div style={{
+                    padding: '14px 18px',
+                    borderRadius: 12,
+                    background: 'rgba(251, 191, 36, 0.08)',
+                    border: '1px solid rgba(251, 191, 36, 0.15)',
+                    marginBottom: 16,
+                    textAlign: 'left',
+                    fontSize: '0.88rem',
+                    color: 'var(--text-secondary)',
+                    lineHeight: 1.7,
+                }}>
+                    <strong style={{ color: '#fbbf24' }}>🚀 AI 여정의 시작</strong><br/>
+                    ChatGPT, Gemini, Claude 같은 AI는 어떻게 우리의 말을 이해할까요?
+                    이 수업에서는 15주에 걸쳐 AI의 내부를 하나씩 파헤쳐 봅니다.
+                    그 <strong>첫 번째 단계</strong>가 바로 오늘 배울 <strong>토큰화</strong>입니다!
+                </div>
+
                 {/* 동기 부여: 왜 토큰화가 필요한가? */}
                 <div style={{
                     padding: '16px 20px',

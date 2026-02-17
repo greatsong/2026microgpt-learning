@@ -386,19 +386,168 @@ frontend/src/
 37. ✅ 참조 업데이트 — week15 REVIEW_ITEMS에서 '3-4' → '3'+'4' 분리
 38. ✅ CSS shorthand 충돌 전수 수정 — border/borderColor 혼용으로 인한 React 경고를 14개 파일에서 border 단축형으로 통일
 
+### Phase 9: GloVe 임베딩 통합 & 콘텐츠 WHY 보강
+39. ✅ GloVe 벡터 추출 — Stanford GloVe (Wikipedia+Gigaword, 300D)에서 51개 단어 벡터를 `frontend/public/data/glove_vectors.json`(128.7KB)으로 추출. 14개 검증된 유추 예시 포함 (king-man+woman=queen, japan-tokyo+seoul=korea 등)
+40. ✅ Week 4 코사인 유사도 실습 페이지 신규 생성 — `frontend/src/app/week4/practice/page.js` (3단계: 2D 벡터 → 3D 벡터 → 실제 GloVe 300D 벡터 연산). Canvas 2D로 드래그 가능한 벡터 시각화, 3D 회전 시각화, AI 편향 교육(doctor-man+woman=nurse 경고)
+41. ✅ Week 4 네비게이션 업데이트 — intro → practice → galaxy 흐름으로 변경. 인트로 버튼 텍스트/경로 수정, 은하수 페이지에서 실습 페이지 링크 추가
+42. ✅ 전체 콘텐츠 WHY/용어 설명 보강 (Week 1~15, ~60개 편집) — 주요 개선 내용:
+    - Week 1: BPE WHY 동기 상자, 프롬프트/코퍼스/서브워드/UNK 한국어 정의, Token ID 설명
+    - Week 2: Logit WHY, Temperature 물리 비유, Softmax 어원, 자기회귀 WHY, Greedy 한국어 설명
+    - Week 3: 원-핫 어원, 벡터/차원/인덱스 정의, 희소 벡터 WHY, 유클리드 거리 설명
+    - Week 5: Gradient descent WHY, Learning rate WHY, Loss function 개선, 옵티마이저 한국어 설명
+    - Week 6: Activation function WHY (비선형 필요성), 각 함수 한국어 설명, Weight/Bias 설명
+    - Week 7: Backpropagation WHY, 편미분 접근 가능 설명, Epoch/Loss 한국어 라벨
+    - Week 8: RNN 제목 한국어화, Time Steps/Hidden State 설명, LSTM 수식 기호 설명, GRU 정의
+    - Week 10: Q/K/V 한국어 직관 설명, Softmax/Self-Attention/K^T/Concat 설명
+    - Week 12: Normalization WHY, CNN/Inference 정의, LayerNorm WHY, 수식 기호 설명
+    - Week 13: vocab/MLP 설명, 한국어 라벨 추가, FFN 4x WHY, Weight tying 설명
+    - Week 14: SFT WHY, Hallucination 한국어 정의, RM WHY, Base Model 정의
+    - Week 15: 바이브 코딩 정의, Tech Stack/API/Serverless 한국어, BPE 리마인더, 프로토타입 정의
+
 ---
 
-## 🚀 시작하기
+## 🔧 알려진 기술 부채 (Technical Debt)
+
+| # | 파일 | 내용 | 우선순위 |
+|---|------|------|---------|
+| D-1 | `frontend/src/app/week4/page.js` | 구 VectorArithmeticPanel 데드 코드 ~180줄 (`__REMOVED__` 함수로 남아있음). 완전 삭제 필요 | P1 |
+| D-2 | 전체 | 인라인 스타일 → CSS 모듈 전환 (2-6). 현재 모든 페이지가 `const styles = {...}` 패턴 | P2 |
+| D-3 | — | 인트로 템플릿 컴포넌트 (2-1). 각 인트로가 독립적이라 우선순위 낮음 | P2 |
+
+---
+
+## 📝 남은 콘텐츠 리뷰 항목 (Phase 9에서 미처리)
+
+Phase 9에서 전체 Week 1~15를 리뷰하여 ~170개 이슈를 발견, 그 중 ~60개 최우선 항목을 처리함.
+아래는 남은 ~110개 하위 우선순위 항목의 대표 카테고리:
+
+### 낮은 우선순위 (P2)
+- **인트로 페이지 WHY 보강**: 각 주차 intro/page.js에도 동기 부여 설명 추가 (현재 메인 랩만 보강됨)
+- **수학 수식 맥락 보충**: 일부 수식(특히 Week 7 체인룰, Week 10 어텐션 수식)에 "이 수식이 왜 이렇게 생겼는지" 직관적 설명 추가
+- **더 상세한 유추 설명**: Week 5 경사하강법의 "골프 비유"나 Week 12 정규화의 "시험 점수 비유" 등을 더 풍부하게
+- **영어 전문 용어 추가 정리**: 일부 용어(예: "latent space", "embedding dimension", "attention score")에 한국어 인라인 정의 추가
+- **개념 간 브릿지 강화**: Week 간 연결고리 설명 (예: "Week 6에서 배운 뉴런이 Week 7에서 어떻게 학습하는지")
+
+### 가능한 미래 개선 (P3)
+- **한국어 토크나이저 예시 강화**: Week 1 BPE에서 한국어 자소 분리 과정 더 상세히
+- **실제 GPT-2 토크나이저 비교**: tiktoken 라이브러리 결과와 우리 시뮬레이션 결과 비교
+- **Week 14 RLHF 시나리오 다국어화**: 한국 사회 맥락에 맞는 윤리적 딜레마 추가
+
+---
+
+## 🎨 디자인 패턴 참조 (Design Patterns)
+
+> 새로운 콘텐츠 작성 시 아래 패턴을 일관되게 사용할 것.
+
+### 콘텐츠 박스 스타일
+```javascript
+// "한 걸음 더" 접이식 섹션 (보라색)
+{ background: 'rgba(124, 92, 252, 0.06)', border: '1px solid rgba(124, 92, 252, 0.15)' }
+
+// 브릿지 섹션 — 주차 간 연결 (금색)
+{ background: 'rgba(251, 191, 36, 0.06)', border: '1px solid rgba(251, 191, 36, 0.15)' }
+
+// 동기 부여 / WHY 섹션 (초록색)
+{ background: 'rgba(52, 211, 153, 0.06)', border: '1px solid rgba(52, 211, 153, 0.15)' }
+
+// WHY 정보 박스 (금색, 위와 동일)
+{ background: 'rgba(251, 191, 36, 0.06)', border: '1px solid rgba(251, 191, 36, 0.15)' }
+```
+
+### 인라인 용어 정의
+```javascript
+// 영어 용어에 한국어 설명을 붙일 때
+<span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>(한국어 설명)</span>
+```
+
+### 주요 CSS 변수
+- `--bg-void`: 배경색
+- `--accent-nova`: 강조색 (보라)
+- `--text-primary`: 주요 텍스트
+- `--text-secondary`: 보조 텍스트
+- `--text-dim`: 흐린 텍스트 (용어 정의용)
+
+### 주요 CSS 클래스
+- `glass-card`: 유리 효과 카드
+- `btn-nova`: 주요 버튼
+- `select-cosmic`: 드롭다운
+- `input-cosmic`: 입력 필드
+- `slider-cosmic`: 슬라이더
+
+---
+
+## 🗂️ 핵심 파일 참조 맵 (업데이트)
+
+```
+frontend/
+├── public/
+│   └── data/
+│       └── glove_vectors.json     ← [Phase 9] 실제 GloVe 300D 벡터 51개 (128.7KB)
+├── src/
+│   ├── app/
+│   │   ├── globals.css            ← 디자인 시스템 (CSS 변수, 애니메이션)
+│   │   ├── layout.js              ← 루트 레이아웃
+│   │   ├── page.js                ← 로그인/홈
+│   │   ├── hub/page.js            ← 미션 센터 (커리큘럼 그리드)
+│   │   ├── dashboard/page.js      ← 교사 대시보드
+│   │   ├── week1/
+│   │   │   ├── intro/page.js
+│   │   │   └── page.js            ← [Phase 9] WHY/용어 보강
+│   │   ├── week2/
+│   │   │   └── page.js            ← [Phase 9] WHY/용어 보강
+│   │   ├── week3/
+│   │   │   ├── intro/page.js
+│   │   │   └── page.js            ← [Phase 9] WHY/용어 보강
+│   │   ├── week4/
+│   │   │   ├── intro/page.js      ← [Phase 9] 네비게이션 업데이트
+│   │   │   ├── practice/page.js   ← [Phase 9 신규] 2D→3D→300D 코사인 유사도 실습
+│   │   │   └── page.js            ← [Phase 9] 데드 코드 정리 필요 (D-1)
+│   │   ├── week5/page.js          ← [Phase 9] WHY/용어 보강
+│   │   ├── week6/page.js          ← [Phase 9] WHY/용어 보강
+│   │   ├── week7/page.js          ← [Phase 9] WHY/용어 보강
+│   │   ├── week8/page.js          ← [Phase 9] WHY/용어 보강
+│   │   ├── week10/page.js         ← [Phase 9] WHY/용어 보강
+│   │   ├── week12/page.js         ← [Phase 9] WHY/용어 보강
+│   │   ├── week13/page.js         ← [Phase 9] WHY/용어 보강
+│   │   ├── week14/page.js         ← [Phase 9] WHY/용어 보강
+│   │   └── week15/page.js         ← [Phase 9] WHY/용어 보강
+│   ├── components/
+│   │   ├── layout/
+│   │   │   ├── ClientLayout.jsx
+│   │   │   └── Sidebar.jsx
+│   │   └── 3d/                    ← 3D 컴포넌트들
+│   ├── constants/
+│   │   └── curriculum.js          ← 커리큘럼 메타데이터
+│   ├── stores/                    ← Zustand 스토어들
+│   └── lib/
+│       ├── socket.js
+│       ├── lossFunction.js        ← 공용 Loss 함수
+│       ├── useSocketRoom.js       ← 소켓 룸 커스텀 훅
+│       └── useRequireRoom.js      ← URL 접근 가드 훅
+backend/
+├── server.js                      ← Express + Socket.io
+└── .env.example                   ← 환경 변수 예시
+```
+
+---
+
+## 🚀 다음 세션에서 시작하기
 
 새 세션에서 다음과 같이 시작하세요:
 
 ```
 IMPROVEMENT_PLAN.md 파일을 보고 작업을 이어서 진행해줘.
-Phase 1부터 시작해줘.
 ```
+
+### 추천 다음 작업 (우선순위 순)
+
+1. **D-1: week4/page.js 데드 코드 정리** — `__REMOVED__` 함수 ~180줄 완전 삭제 (5분)
+2. **남은 콘텐츠 리뷰 항목 처리** — 인트로 페이지 WHY 보강, 수학 수식 맥락 보충
+3. **Week 1 한국어 BPE 강화** — 자소 분리 과정 더 상세하게
+4. **인라인 스타일 정리 (2-6)** — 공통 패턴을 globals.css 클래스로 추출
 
 또는 특정 작업만 지정:
 
 ```
-IMPROVEMENT_PLAN.md 파일을 보고, Week 10 인트로 리뉴얼(1-8) 작업을 진행해줘.
+IMPROVEMENT_PLAN.md 파일을 보고, D-1 week4 데드 코드 정리를 진행해줘.
 ```

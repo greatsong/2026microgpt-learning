@@ -1,9 +1,11 @@
 'use client';
 
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function WeekIntroPage() {
     const router = useRouter();
+    const [showDeepDive, setShowDeepDive] = useState(false);
 
     return (
         <div style={styles.container}>
@@ -75,6 +77,52 @@ export default function WeekIntroPage() {
                         👇 아래 버튼을 눌러 직접 체험해보세요!<br />
                         AI에게 좋은 답변과 나쁜 답변을 가르치는 과정을 시뮬레이션 해보세요!
                     </p>
+                </div>
+
+                {/* 한 걸음 더: RLHF 이후의 발전 */}
+                <div style={{
+                    marginTop: 16, borderRadius: 12,
+                    border: '1px solid rgba(124, 92, 252, 0.2)', overflow: 'hidden', textAlign: 'left',
+                }}>
+                    <button
+                        onClick={() => setShowDeepDive(!showDeepDive)}
+                        style={{
+                            width: '100%', padding: '12px 16px',
+                            background: 'rgba(124, 92, 252, 0.08)', border: 'none',
+                            color: '#a78bfa', fontSize: '0.9rem', fontWeight: 600,
+                            cursor: 'pointer', textAlign: 'left',
+                            display: 'flex', alignItems: 'center', gap: 8,
+                        }}
+                    >
+                        {showDeepDive ? '▼' : '▶'} 한 걸음 더: RLHF 이후, AI Alignment는 어디까지 왔을까?
+                    </button>
+                    {showDeepDive && (
+                        <div style={{
+                            padding: 16, background: 'rgba(124, 92, 252, 0.04)',
+                            fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.7,
+                        }}>
+                            <p style={{ marginBottom: 10 }}>
+                                RLHF는 ChatGPT를 만든 핵심 기술이지만, 한계도 있어요:
+                            </p>
+                            <p style={{ marginBottom: 8 }}>
+                                <strong style={{ color: '#f87171' }}>RLHF의 한계</strong> —
+                                보상 모델(Reward Model)을 따로 학습시켜야 해서 비용이 크고,
+                                보상 모델이 &quot;진짜 좋은 답&quot;이 아닌 &quot;높은 점수를 받는 답&quot;을 학습하는
+                                <strong> 보상 해킹(Reward Hacking)</strong> 문제가 있어요.
+                            </p>
+                            <p style={{ marginBottom: 8 }}>
+                                <strong style={{ color: '#10b981' }}>DPO (Direct Preference Optimization, 2023)</strong> —
+                                보상 모델 없이, &quot;A 답변이 B보다 좋다&quot;는 선호 데이터만으로 직접 모델을 학습시키는 방법.
+                                RLHF보다 훨씬 간단하고 안정적이어서 <strong>LLaMA 2, Zephyr</strong> 등에서 채택됐습니다.
+                            </p>
+                            <p>
+                                <strong style={{ color: '#fbbf24' }}>Constitutional AI (Anthropic, 2022)</strong> —
+                                AI에게 &quot;원칙(Constitution)&quot;을 주고, 스스로 자기 답변을 평가하고 수정하게 하는 방법.
+                                사람의 평가 없이도 AI가 안전해질 수 있다는 아이디어예요.
+                                이것이 <strong>Claude</strong>를 만든 Anthropic의 핵심 기술입니다!
+                            </p>
+                        </div>
+                    )}
                 </div>
 
                 <button
